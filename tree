@@ -1,0 +1,129 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+namespace tree
+{
+    public class Tree
+    {
+        public int val;
+        public Tree left;
+        public Tree right;
+        public Tree(int x)
+        {
+            val = x;
+        }
+
+    }
+   class Program
+    {
+        static void Main(string[] args)
+        {
+            var obj = new Btree();
+            var rnd = new System.Random(1);
+            var init = Enumerable.Range(0, 15).OrderBy(x => rnd.Next()).ToArray(); 
+            foreach (var i in init)
+                obj.Insert(i);
+            obj.root = obj.buildtree(obj.root);
+            
+            //obj.Insert(5);
+            //obj.Insert(7);
+            //obj.Insert(1);
+            //obj.Insert(3);
+            //obj.Insert(6);
+            obj.Print();
+            //var lst = new ArrayList<int>();
+
+
+
+        }
+    }
+    public class Btree
+    {
+        public Tree root;
+        public Btree(){}
+        public void Insert(int x)
+        {
+            if (root == null)
+                root = new Tree(x);
+            else
+                insert(root, x);
+        }
+        private void insert(Tree p,int x)
+        {
+            if (x < p.val)
+                if (p.left != null)
+                    insert(p.left, x);
+                else
+                    p.left = new Tree(x);
+            else 
+                if(p.right!=null)
+                    insert(p.right, x);
+                else
+                    p.right = new Tree(x);
+        }
+        public void Print()
+        {
+            print(root, 0);
+        }
+        private void print(Tree p,int shift)
+        {
+            if (p.left != null)
+                print(p.left, shift + 1);
+            for(int i = 0; i != shift; i++)
+            {
+                Console.Write("  ");
+            }
+            Console.WriteLine(p.val);
+            if (p.right != null)
+                print(p.right, shift + 1);
+        }
+        public void store(Tree p, List<Tree> nodes)
+        {
+            if (p == null)
+                return;
+            store(p.left, nodes);
+            nodes.Add(p);
+            store(p.right, nodes);
+        }
+        public Tree buildtree(Tree p)
+        {
+            var nodes = new List<Tree>();
+            store(p, nodes);
+            return buildit(nodes, 0, nodes.Count - 1);
+        }
+        public Tree buildit(List<Tree> nodes, int start, int end)
+        {
+            if (start > end)
+                return null;
+            int mid = (start + end) / 2;
+            Tree p = nodes[mid];
+            p.left = buildit(nodes, start, mid - 1);
+            p.right = buildit(nodes, mid + 1, end);
+            return p;
+        }
+        public List<List<int>> get_lists()
+        {
+            var lst = new List<List<int>>();
+            lst.Add(new List<int>());
+            print(root, 0);
+            return lst;
+        }
+        public void print_tree(Tree n, int step, List<List<int>> lst)
+        {
+            if (n.right != null)
+            {
+                print_tree(n.right, step + 1, lst);
+            }
+            for (int i = 0; i < step; i++)
+                lst.Last().Add(-1);
+            //lst.Last().Add(n.data);
+            lst.Add(new List<int>());
+            if (n.left != null)
+            {
+                print_tree(n.left, step + 1, lst);
+            }
+        }
+        
+    }
+        
+}
